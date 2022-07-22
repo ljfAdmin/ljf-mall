@@ -1,0 +1,206 @@
+1.admin/index.html页面中三个github地址需要改成自己的
+2.admin/footer.html页面中一个github地址需要改成自己的
+ error/error.html页面中有一个github地址改成自己的  https://github.com/newbee-ltd/newbee-mall-plus/issues/new
+ mall/footer.html页面中有多个github地址改成自己的
+ mall/header.html页面中有多个github地址改成自己的
+Swagger2Config文件中github地址换成自己的；
+
+3.该项目中使用的分页插件是jqGrid前端库
+
+4.MallGoodsInfoController中某些方法抛出异常跟原代码方法不同
+5.MallGoodsCategoryController中某些方法抛出异常跟原代码方法不同
+6.MallIndexConfigController中某些方法抛出异常跟原代码方法不同
+    FrontMallIndexConfigController中某些方法抛出异常跟原代码方法不同
+    FrontMallGoodsInfoController中某些方法抛出异常跟原代码方法不同
+    MallOrderServiceImpl中某些方法抛出异常跟原代码方法不同
+    FrontMallOrderController中某些方法抛出异常跟原代码方法不同
+    ......
+
+7.事务相关的操作
+8.RedisCache中的说明
+
+9.除了OrderController、MallUserController以及MallSeckillController之外，其他都还没有考虑事务
+
+10.MallUserVO类中有一个属性不明
+
+11.MallCouponVO类中有几个属性不明
+
+
+java出现一系列找不到符号:https://blog.csdn.net/m0_67266787/article/details/123949692
+
+The following method did not exist:
+    org.apache.commons.pool2.impl.GenericObjectPoolConfig.setMaxWait(Ljava/time/Duration;)V
+解决：https://blog.csdn.net/Mr_Hoga/article/details/123392107
+
+
+轮播图数据库中改动：
+https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner1.png
+https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner2.png
+
+Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException
+解决：https://blog.csdn.net/hadues/article/details/123753888
+
+
+保存商品的图片位置：http://localhost:8081/upload/20220706_13180141.jpg
+    E:\MySpace\ljf-mall\ljf-mall\upload\20220706_13335874.jpg
+
+    Cannot deserialize value of type `java.util.Date` from String "2022-07-07":
+not a valid representation (error: Failed to parse Date value '2022-07-07':
+Unparseable date: "2022-07-07")
+解决：https://blog.csdn.net/qq_16946803/article/details/121876177
+
+注：目前的情况是当我进入秒杀商品详情页面后，会一直发送/seckill/{seckillId}/checkStock请求，并且每隔
+ 500ms发送该请求，造成我的浏览器崩掉以及无法执行其他正常的请求，比如跳转到订单页面；
+ 注：源码线上版本是将近400ms发送一个请求
+
+改进：
+    分布式？
+    前后端分离？
+    shiro或者SpringSecurity？
+    手机号短信验证码登录？对于用户来说是这样
+    图片存储使用OSS？
+    会员管理？
+    分布式锁：157 --> 大于？
+
+优化1：开启thymeleaf缓存
+    不加缓存
+        208  461  613  987
+    加缓存
+        300  250  309  472
+    加缓存+全量  崩了
+
+优化2：将不必要的System.out.println()查看测试结果语句删除
+    315+  275  369  522
+          193  304  410
+优化3：关日志：设置日志级别高点  比如由debug改为info/error
+
+优化4：数据库相关的
+    比如，首页数据中拿到分类信息，其中调用了多次访问数据库的方法getAppointedLevelGoodsCategories()
+        该方法中：
+                queryWrapper.eq("parent_id",parentId);
+                queryWrapper.eq("category_level",categoryLevel);
+                queryWrapper.orderByDesc("category_rank");
+
+    controller中对应代码在对应的列没加索引前：
+                long start = System.currentTimeMillis();
+                List<MallIndexGoodsCategoryVO> categoryVOS = mallGoodsCategoryService.getCategoriesForIndex();
+                long cost = System.currentTimeMillis() - start;
+                System.out.println("查询三级分类数据消耗的时间：" + cost);
+        查询三级分类数据消耗的时间：180
+        查询三级分类数据消耗的时间：80
+        查询三级分类数据消耗的时间：50
+        查询三级分类数据消耗的时间：49
+
+    加索引：
+        由于category_level：(value = "分类级别(1-一级分类 2-二级分类 3-三级分类)")
+        并不适合加索引，
+        因此这里首先给parent_id列加上索引
+
+    注：发现加了索引改进也不是很大甚至不如不加索引，主要数据量太小只有92条
+        因此目前没有必要加索引
+
+优化5：业务相关
+    ①三级分类查询的时候时间复杂度是O(n^2)，改进方法使其复杂度为O(n)？   不可避免
+    ②查询这里的分类数据使用了多次查询数据库，但是可以设置为查询一次数据库，然后根据条件自行选择
+    333  189  209  313
+    354  180  201  302
+    查询三级分类数据消耗的时间：90
+    查询三级分类数据消耗的时间：8
+    查询三级分类数据消耗的时间：0  显著提高
+    因此，将所有符合上述条件的都进行改进
+
+    ③这里的分类数据基本不会改变，使用缓存？
+
+优化6：JVM相关
+
+注：为什么项目一启动就一直在进行minor GC
+    https://www.cnblogs.com/guanghe/p/15797314.html
+注：Visual VM的使用
+    https://blog.csdn.net/qq_37896194/article/details/125273835
+注：为什么Eden的当前容量会时不时变化？
+    当前容量和最大可用容量肯能不同，因为ms和mx设置不同，运行过程中堆的大小会调整，
+    也有可能用的PS收集采用了adptive size策略，GC自动调整大小。
+    JVM的内存参数-Xmx最大分配, -Xms是初始化内存. 当-Xms小于-Xmx时, 当内存使用不足时JVM就会自动扩展,直到扩展到最大值Xmx.
+
+注：堆区
+    默认情况下:
+        初始内存大小：物理电脑内存大小/64    256M
+        最大内存大小：物理电脑内存大小/4     4GB
+    其中新生代老年代一般是1:2   85M
+        而新生代中的Eden和Survivor区是8:1:1    68M
+
+优化7：缓存(redis)
+    这里比如我的首页的轮播图数据、分类数据，可以放到缓存中
+    首先仍然是测试首页相关，首页中要显示分类信息，因此这里首先将List<MallIndexGoodsCategoryVO> getCategoriesForIndex()
+    改为缓存版本
+    其吞吐量
+    377  167  183  224    查询三级分类数据消耗的时间：0
+    再次测试：
+    386  165  179  208
+
+    1.空结果缓存：解决缓存穿透
+    2.设置过期时间（加随机值）：解决缓存雪崩
+    3.加锁：解决缓存击穿   具体缓存某个数据，比如11-号商品， product-11-lock
+        测试：352  173  191  260
+        再次测试：377  168  185  226
+
+    按照上述优化将首页中的轮播图方法改为缓存模式后的的吞吐量：
+        715+  135  196  333
+    再次测试：
+        800+  123  177  301
+
+    按照上述优化再次优化首页方法中的其他方法设置为缓存模式：
+        mallIndexConfigService.getConfigHotGoodsForIndex();
+        mallIndexConfigService.getConfigNewGoodsForIndex();
+        mallIndexConfigService.getConfigRecommendGoodsForIndex();
+    测试：
+        进入了getCarouselsForIndex方法
+        进入了getConfigHotGoodsForIndex方法
+        进入了getConfigNewGoodsForIndex方法
+        进入了getConfigRecommendGoodsForIndex方法
+        方法都只进入了一次
+        2100+  38 54 123
+    再次测试：2300+  34  47  106  没有再进入上述方法
+优化8：
+
+
+
+注：
+┌─────┐
+|  MQConfig (field private org.springframework.amqp.rabbit.core.RabbitTemplate com.ljf.rabbitmq.MQConfig.rabbitTemplate)
+↑     ↓
+|  rabbitTemplate defined in class path resource [org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration$RabbitTemplateConfiguration.class]
+↑     ↓
+|  rabbitTemplateConfigurer defined in class path resource [org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration$RabbitTemplateConfiguration.class]
+└─────┘
+解决：https://blog.csdn.net/dyc87112/article/details/121433751
+
+
+@RequestParam注解的使用：
+    @RequestMapping(value = "/carousels/list", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Page<MallCarousel>> getCarouselListPage(@RequestParam Map<String,Object> params){
+        if(StringUtils.isEmpty((CharSequence) params.get("page")) || StringUtils.isEmpty((CharSequence) params.get("limit"))){
+            return ResultGenerator.genFailResult("请输入参数page和limit完全");
+        }
+
+        Integer currentPage = Integer.valueOf(((String) params.get("page")));
+        Integer limit = Integer.valueOf(((String) params.get("limit")));
+        // Integer start = (currentPage - 1) * limit;
+
+        Page<MallCarousel> page = new Page<>(currentPage,limit);
+        QueryWrapper<MallCarousel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("carousel_rank");
+        // queryWrapper.last("limit "+start+","+limit);
+        mallCarouselService.page(page, queryWrapper);
+        /* long total = page.getTotal();
+         long current = page.getCurrent();
+         List<MallCarousel> records = page.getRecords();
+         long size = page.getSize();
+         long pages = page.getPages();
+        System.out.println(total);//2
+        System.out.println(current);//1
+        System.out.println(size);//10
+        System.out.println(pages);//1*/
+        return ResultGenerator.genSuccessResult(page);
+    }
