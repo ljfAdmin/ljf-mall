@@ -2,7 +2,7 @@ package com.ljf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ljf.constant.FrontIndexConstant;
-import com.ljf.constant.MallIndexConfigTypeEnum;
+import com.ljf.constant.enums.MallIndexConfigTypeEnum;
 import com.ljf.entity.MallGoodsInfo;
 import com.ljf.entity.MallIndexConfig;
 import com.ljf.entity.vo.MallIndexConfigGoodsVO;

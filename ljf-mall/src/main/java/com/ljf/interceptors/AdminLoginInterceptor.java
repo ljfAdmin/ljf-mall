@@ -1,5 +1,7 @@
 package com.ljf.interceptors;
 
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,13 +14,12 @@ import javax.servlet.http.HttpServletResponse;
  * */
 @Component
 public class AdminLoginInterceptor implements HandlerInterceptor {
-
     /**
      * 注意：只拦截后台的请求
      * */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String servletPath = request.getServletPath();
+        String servletPath = request.getServletPath();// /admin/
 
         if(servletPath.startsWith("/admin") && null == request.getSession().getAttribute("loginUser")){
             // 需要进行后台管理员登录

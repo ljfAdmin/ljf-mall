@@ -1,6 +1,5 @@
 package com.ljf.utils;
 
-import com.ljf.constant.ToFrontMessageConstantEnum;
 import org.apache.commons.lang3.StringUtils;
 
 public class ResultGenerator {

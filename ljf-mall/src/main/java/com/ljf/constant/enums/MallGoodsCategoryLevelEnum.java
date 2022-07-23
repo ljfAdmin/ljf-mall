@@ -1,6 +1,6 @@
-package com.ljf.constant;
+package com.ljf.constant.enums;
 
-public enum MallGoodsCategoryLevel {
+public enum MallGoodsCategoryLevelEnum {
     LEVEL_ONE(1, "一级分类"),
     LEVEL_TWO(2, "二级分类"),
     LEVEL_THREE(3, "三级分类");
@@ -8,7 +8,7 @@ public enum MallGoodsCategoryLevel {
     private Integer level;
     private String description;
 
-    private MallGoodsCategoryLevel(Integer level,String description){
+    private MallGoodsCategoryLevelEnum(Integer level, String description){
         this.level = level;
         this.description = description;
     }

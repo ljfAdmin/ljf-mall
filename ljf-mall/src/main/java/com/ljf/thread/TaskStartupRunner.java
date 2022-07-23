@@ -1,7 +1,7 @@
 package com.ljf.thread;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ljf.constant.MallOrderStatusEnum;
+import com.ljf.constant.enums.MallOrderStatusEnum;
 import com.ljf.entity.MallOrder;
 import com.ljf.service.MallOrderService;
 import org.springframework.beans.factory.annotation.Autowired;

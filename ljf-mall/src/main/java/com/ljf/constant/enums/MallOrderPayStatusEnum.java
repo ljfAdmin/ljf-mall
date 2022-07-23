@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.enums;
 
 /**
  * 订单状态:0.支付中 1.支付成功 -1.支付失败

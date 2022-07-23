@@ -2,7 +2,7 @@ package com.ljf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ljf.constant.FrontMallUserInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallCoupon;
 import com.ljf.entity.MallUser;
 import com.ljf.entity.MallUserCouponRecord;
@@ -12,7 +12,6 @@ import com.ljf.service.MallCouponService;
 import com.ljf.service.MallUserCouponRecordService;
 import com.ljf.service.MallUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ljf.utils.BeanUtil;
 import com.ljf.utils.MD5Util;
 import com.ljf.utils.MallUtil;
 import org.springframework.beans.BeanUtils;

@@ -1,7 +1,6 @@
 package com.ljf.controller.front;
 
 import com.ljf.constant.FrontIndexConstant;
-import com.ljf.constant.MallIndexConfigTypeEnum;
 import com.ljf.entity.vo.MallIndexCarouselVO;
 import com.ljf.entity.vo.MallIndexConfigGoodsVO;
 import com.ljf.entity.vo.MallIndexGoodsCategoryVO;

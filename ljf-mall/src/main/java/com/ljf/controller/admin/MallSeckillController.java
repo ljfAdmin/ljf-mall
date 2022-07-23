@@ -4,12 +4,14 @@ package com.ljf.controller.admin;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ljf.constant.MallSeckillInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallSeckill;
 import com.ljf.redis.MallRedisCache;
 import com.ljf.service.MallSeckillService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,7 @@ import java.util.Map;
  * @author ljf
  * @since 2022-06-24
  */
+@Api(value = "后台秒杀控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallSeckillController {
@@ -40,21 +43,10 @@ public class MallSeckillController {
 
     /**
      * 跳转到秒杀页面
-     *
-     * 在这里纠正一下状态
      * */
+    @ApiOperation(value = "跳转到秒杀页面")
     @GetMapping("/seckill")
     public String toSeckillIndex(HttpServletRequest request) {
-        // 此外开始时间应该比创建时间大！
-        /*List<MallSeckill> seckills= mallSeckillService.list(null);
-        for (MallSeckill seckill : seckills) {
-            if(seckill.getSeckillBegin().compareTo(seckill.getCreateTime()) > 0
-                    ||seckill.getSeckillEnd().compareTo(new Date()) <= 0){
-                seckill.setSeckillStatus(false);
-            }
-            mallSeckillService.updateById(seckill);
-        }*/
-
         request.setAttribute("path", "ljf_mall_seckill");
         return "admin/mall_seckill";
     }
@@ -62,6 +54,7 @@ public class MallSeckillController {
     /**
      * 分页查询秒杀信息
      * */
+    @ApiOperation(value = "条件分页查询秒杀信息")
     @ResponseBody
     @GetMapping("/seckill/list")
     public Result getSeckillListPageWhere(@RequestParam Map<String, Object> params) throws ParseException {
@@ -100,6 +93,7 @@ public class MallSeckillController {
     /**
      * 秒杀信息的保存
      * */
+    @ApiOperation(value = "保存秒杀信息")
     @ResponseBody
     @PostMapping("/seckill/save")
     public Result save(@RequestBody MallSeckill mallSeckill) {
@@ -125,6 +119,7 @@ public class MallSeckillController {
     /**
      * 更新秒杀订单
      * */
+    @ApiOperation(value = "更新秒杀信息")
     @PostMapping("/seckill/update")
     @ResponseBody
     public Result update(@RequestBody MallSeckill mallSeckill) {
@@ -153,6 +148,7 @@ public class MallSeckillController {
     /**
      * 秒杀详细信息
      * */
+    @ApiOperation(value = "根据Id查询秒杀信息详情")
     @GetMapping("/seckill/{id}")
     @ResponseBody
     public Result getSeckillInfoById(@PathVariable("id") Long id) {
@@ -161,8 +157,9 @@ public class MallSeckillController {
     }
 
     /**
-     * 删除相关的秒杀信息，先删除缓存还是数据库中数据
+     * 删除相关的秒杀信息
      * */
+    @ApiOperation(value = "根据ID主键删除秒杀信息，先删除redis缓存中数据，然后删除数据库中数据")
     @DeleteMapping("/seckill/{id}")
     @ResponseBody
     public Result deleteSeckill(@PathVariable Long id) {

@@ -1,50 +1,23 @@
-1.admin/index.html页面中三个github地址需要改成自己的
-2.admin/footer.html页面中一个github地址需要改成自己的
- error/error.html页面中有一个github地址改成自己的  https://github.com/newbee-ltd/newbee-mall-plus/issues/new
- mall/footer.html页面中有多个github地址改成自己的
- mall/header.html页面中有多个github地址改成自己的
-Swagger2Config文件中github地址换成自己的；
-
 3.该项目中使用的分页插件是jqGrid前端库
-
-4.MallGoodsInfoController中某些方法抛出异常跟原代码方法不同
-5.MallGoodsCategoryController中某些方法抛出异常跟原代码方法不同
-6.MallIndexConfigController中某些方法抛出异常跟原代码方法不同
-    FrontMallIndexConfigController中某些方法抛出异常跟原代码方法不同
-    FrontMallGoodsInfoController中某些方法抛出异常跟原代码方法不同
-    MallOrderServiceImpl中某些方法抛出异常跟原代码方法不同
-    FrontMallOrderController中某些方法抛出异常跟原代码方法不同
-    ......
 
 7.事务相关的操作
 8.RedisCache中的说明
 
 9.除了OrderController、MallUserController以及MallSeckillController之外，其他都还没有考虑事务
 
-10.MallUserVO类中有一个属性不明
-
-11.MallCouponVO类中有几个属性不明
-
-
-java出现一系列找不到符号:https://blog.csdn.net/m0_67266787/article/details/123949692
+java出现一系列找不到符号错误解决:https://blog.csdn.net/m0_67266787/article/details/123949692
 
 The following method did not exist:
     org.apache.commons.pool2.impl.GenericObjectPoolConfig.setMaxWait(Ljava/time/Duration;)V
 解决：https://blog.csdn.net/Mr_Hoga/article/details/123392107
 
-
-轮播图数据库中改动：
-https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner1.png
-https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner2.png
-
 Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException
 解决：https://blog.csdn.net/hadues/article/details/123753888
-
 
 保存商品的图片位置：http://localhost:8081/upload/20220706_13180141.jpg
     E:\MySpace\ljf-mall\ljf-mall\upload\20220706_13335874.jpg
 
-    Cannot deserialize value of type `java.util.Date` from String "2022-07-07":
+Cannot deserialize value of type `java.util.Date` from String "2022-07-07":
 not a valid representation (error: Failed to parse Date value '2022-07-07':
 Unparseable date: "2022-07-07")
 解决：https://blog.csdn.net/qq_16946803/article/details/121876177
@@ -52,6 +25,12 @@ Unparseable date: "2022-07-07")
 注：目前的情况是当我进入秒杀商品详情页面后，会一直发送/seckill/{seckillId}/checkStock请求，并且每隔
  500ms发送该请求，造成我的浏览器崩掉以及无法执行其他正常的请求，比如跳转到订单页面；
  注：源码线上版本是将近400ms发送一个请求
+
+注：URL和URI的区别
+    System.out.println(request.getRequestURI());// /seckill
+    System.out.println(request.getRequestURL());// http://localhost:8081/seckill
+
+
 
 改进：
     分布式？

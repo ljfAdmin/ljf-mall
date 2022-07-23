@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.enums;
 
 public enum MallOrderStatusEnum {
     DEFAULT(-9, "ERROR"),

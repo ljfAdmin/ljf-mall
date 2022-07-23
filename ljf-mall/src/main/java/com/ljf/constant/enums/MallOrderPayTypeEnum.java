@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.enums;
 
 /**
  * 订单状态:0.无 1.支付宝 2.微信支付

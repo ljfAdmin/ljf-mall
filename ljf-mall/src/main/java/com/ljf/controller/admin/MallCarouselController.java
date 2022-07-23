@@ -2,13 +2,14 @@ package com.ljf.controller.admin;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallCarousel;
 import com.ljf.service.MallCarouselService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,6 +30,7 @@ import java.util.Objects;
  *
  * 首页轮播图相关操作
  */
+@Api(value = "后台首页轮播图控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallCarouselController {
@@ -39,6 +40,7 @@ public class MallCarouselController {
     /**
      * 转到轮播图页面
      */
+    @ApiOperation(value = "转到轮播图页面")
     @GetMapping(value = "/carousels")
     public String toCarouselPage(HttpServletRequest request){
         request.setAttribute("path","ljf_mall_carousel");
@@ -48,6 +50,7 @@ public class MallCarouselController {
     /**
      * 分页查询，这里请求参数是三个，可以封装成一个Java对象或者一个Map或者一个一个写
      * */
+    @ApiOperation(value = "分页条件查询轮播图列表信息")
     @RequestMapping(value = "/carousels/list", method = RequestMethod.GET)
     @ResponseBody
     public Result<Page<MallCarousel>> getCarouselListPage(@RequestParam Map<String,Object> params){
@@ -79,6 +82,7 @@ public class MallCarouselController {
     /**
      * 添加操作
      * */
+    @ApiOperation(value = "添加轮播图信息操作")
     @RequestMapping(value = "/carousels/save",method = RequestMethod.POST)
     @ResponseBody
     public Result saveCarousel(@RequestBody MallCarousel mallCarousel){
@@ -96,6 +100,7 @@ public class MallCarouselController {
     /**
      * 根据ID修改对应的数据
      * */
+    @ApiOperation(value = "修改轮播图数据")
     @RequestMapping(value = "/carousels/update",method = RequestMethod.POST)
     @ResponseBody
     public Result updateCarousel(@RequestBody MallCarousel mallCarousel){
@@ -112,6 +117,7 @@ public class MallCarouselController {
     /**
      * 详情
      * */
+    @ApiOperation(value = "根据Id查询轮播图详情")
     @RequestMapping(value = "/carousels/info/{id}",method = RequestMethod.GET)
     @ResponseBody
     public Result getCarouselInfoById(@PathVariable("id") Integer carouselId){
@@ -122,6 +128,7 @@ public class MallCarouselController {
     /**
      * 删除操作
      * */
+    @ApiOperation(value = "根据主键ID数组批量删除轮播图信息")
     @RequestMapping(value = "/carousels/delete",method = RequestMethod.POST)
     @ResponseBody
     public Result deleteCarousel(@RequestBody Integer[] ids){

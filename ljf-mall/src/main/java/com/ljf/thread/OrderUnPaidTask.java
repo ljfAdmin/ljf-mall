@@ -1,7 +1,7 @@
 package com.ljf.thread;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ljf.constant.MallOrderStatusEnum;
+import com.ljf.constant.enums.MallOrderStatusEnum;
 import com.ljf.constant.MallSeckillInfoConstant;
 import com.ljf.entity.MallGoodsInfo;
 import com.ljf.entity.MallOrder;
@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 public class OrderUnPaidTask extends Task {
+    // 获取日志记录对象
     private final Logger log = LoggerFactory.getLogger(OrderUnPaidTask.class);
 
     /**
@@ -61,6 +62,7 @@ public class OrderUnPaidTask extends Task {
         MallOrder mallOrder = mallOrderService.getById(this.orderId);
 
         if (mallOrder == null) {
+            // 按照 INFO 级别打印日志
             log.info("系统结束处理延时任务---订单超时未付款--- {}", this.orderId);
             return;
         }

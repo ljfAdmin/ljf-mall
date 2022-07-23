@@ -4,19 +4,18 @@ package com.ljf.controller.admin;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.MallGoodsCategoryLevel;
+import com.ljf.constant.enums.MallGoodsCategoryLevelEnum;
 import com.ljf.constant.MallGoodsSellStatusConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
-import com.ljf.entity.MallCoupon;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallGoodsCategory;
 import com.ljf.entity.MallGoodsInfo;
-import com.ljf.mapper.MallGoodsInfoMapper;
 import com.ljf.service.MallGoodsCategoryService;
 import com.ljf.service.MallGoodsInfoService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +37,7 @@ import java.util.Objects;
  * @author ljf
  * @since 2022-06-24
  */
+@Api(value = "后台商品信息控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallGoodsInfoController {
@@ -47,6 +47,7 @@ public class MallGoodsInfoController {
     @Autowired
     private MallGoodsCategoryService mallGoodsCategoryService;
 
+    @ApiOperation(value = "跳转到商品信息页面")
     @GetMapping("/goods")
     public String goodsPage(HttpServletRequest request) {
         request.setAttribute("path", "ljf_mall_goods");
@@ -64,6 +65,7 @@ public class MallGoodsInfoController {
      *
      * TODO: 这些分类信息当然也可以作为全局字典存储在全局作用域中
      * */
+    @ApiOperation("携带数据跳转到商品修改页面")
     @GetMapping("/goods/edit")
     public String edit(HttpServletRequest request) throws Exception {
         request.setAttribute("path", "edit");
@@ -72,16 +74,16 @@ public class MallGoodsInfoController {
 
         // 查询所有的一级分类，一级分类特点：所有的parentId都为0
         // List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel());
-        List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(),allGoodsCategories);
+        List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(),allGoodsCategories);
 
         if(!CollectionUtils.isEmpty(firstLevelCategories)){
             // 查询一级分类下第一个实体下的所有二级分类
             //List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel());
-            List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+            List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
             if(!CollectionUtils.isEmpty(secondLevelCategories)){
                 // 查询二级分类下第一个实体下的所有三级分类
                 //List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
-                List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
                 request.setAttribute("firstLevelCategories", firstLevelCategories);
                 request.setAttribute("secondLevelCategories", secondLevelCategories);
                 request.setAttribute("thirdLevelCategories", thirdLevelCategories);
@@ -99,6 +101,7 @@ public class MallGoodsInfoController {
      *
      *    注：这里的逻辑：这里不仅仅要查出所有的分类信息，还要将属于该商品的分类信息查询出来后续做高亮显示
      * */
+    @ApiOperation(value = "根据商品ID跳转到商品详情信息页面")
     @GetMapping("/goods/edit/{goodsId}")
     public String editGoodsInfoById(HttpServletRequest request,
                                     @PathVariable("goodsId") Long goodsId) {
@@ -113,16 +116,16 @@ public class MallGoodsInfoController {
             //有分类字段则查询相关分类数据返回给前端以供分类的三级联动显示
             MallGoodsCategory currentGoodsCategory = mallGoodsCategoryService.getById(goodsInfo.getGoodsCategoryId());
             //商品表中存储的分类id字段为三级分类的id，不为三级分类则是错误数据
-            if(currentGoodsCategory != null && currentGoodsCategory.getCategoryLevel().equals(MallGoodsCategoryLevel.LEVEL_THREE.getLevel())){
+            if(currentGoodsCategory != null && currentGoodsCategory.getCategoryLevel().equals(MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel())){
                 // 查询该三级分类的上面的二级分类和一级分类
                 // 首先查询所有的一级分类
                 //List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel());
-                List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(),allGoodsCategories);
                 // 查询所有的二级分类
 
                 // 查询所有的三级分类
                 //List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(currentGoodsCategory.getParentId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
-                List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(currentGoodsCategory.getParentId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(currentGoodsCategory.getParentId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
 
                 // 查询当前三级分类的父类二级分类
                 MallGoodsCategory currentSecondCategory = mallGoodsCategoryService.getById(currentGoodsCategory.getParentId());
@@ -130,7 +133,7 @@ public class MallGoodsInfoController {
                 if(currentSecondCategory != null){
                     // 查询所有的二级分类
                     //List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(currentGoodsCategory.getParentId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel());
-                    List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(currentGoodsCategory.getParentId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                    List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(currentGoodsCategory.getParentId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
                     // 根据当前二级分类查询出商品所属的一级分类
                     MallGoodsCategory currentFirstCategory = mallGoodsCategoryService.getById(currentSecondCategory.getParentId());
                     if(currentFirstCategory != null){
@@ -150,15 +153,15 @@ public class MallGoodsInfoController {
         if(goodsInfo.getGoodsCategoryId() == 0L){
             // 查询所有的一级分类
             // List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel());
-            List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(),allGoodsCategories);
+            List<MallGoodsCategory> firstLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(),allGoodsCategories);
             if(!CollectionUtils.isEmpty(firstLevelCategories)){
                 // 查询一级分类列表中第一个实体的所有二级分类
                 //List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel());
-                List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> secondLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
                 if(!CollectionUtils.isEmpty(secondLevelCategories)){
                     // 查询二级分类列表中第二个实体的所有一级分类
                     //List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
-                    List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                    List<MallGoodsCategory> thirdLevelCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategories.get(0).getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
                     request.setAttribute("firstLevelCategories", firstLevelCategories);
                     request.setAttribute("secondLevelCategories", secondLevelCategories);
                     request.setAttribute("thirdLevelCategories", thirdLevelCategories);
@@ -176,6 +179,7 @@ public class MallGoodsInfoController {
      *
      * 注：这里跟以往不同，这里添加上了条件的封装，除了page,limit,order等分页请求数据之外
      * */
+    @ApiOperation(value = "分页条件查询商品信息列表")
     @GetMapping(value = "/goods/list")
     @ResponseBody
     public Result getGoodsInfoListPage(@RequestParam Map<String,Object> params) throws ParseException {
@@ -225,6 +229,7 @@ public class MallGoodsInfoController {
     /**
      * 添加一个商品
      * */
+    @ApiOperation(value = "添加商品")
     @PostMapping(value = "/goods/save")
     @ResponseBody
     public Result saveGoodsInfo(@RequestBody MallGoodsInfo goodsInfo){
@@ -244,6 +249,7 @@ public class MallGoodsInfoController {
     /**
      * 修改一个商品信息
      * */
+    @ApiOperation(value = "修改商品")
     @PostMapping(value = "/goods/update")
     @ResponseBody
     public Result updateGoodsInfo(@RequestBody MallGoodsInfo goodsInfo){
@@ -263,6 +269,7 @@ public class MallGoodsInfoController {
     /**
      * 根据商品ID，查询商品详情
      * */
+    @ApiOperation(value = "根据商品主键ID查询商品详情信息")
     @GetMapping(value = "/goods/info/{id}")
     @ResponseBody
     public Result getGoodsInfoById(@PathVariable("id") Long goodsId){
@@ -273,6 +280,7 @@ public class MallGoodsInfoController {
     /**
      * 批量修改销售状态
      * */
+    @ApiOperation(value = "根据主键ID数组批量改变商品上架状态 0-下架 1-上架")
     @PutMapping(value = "/goods/status/{sellStatus}")
     @ResponseBody
     public Result delete(@RequestBody Long[] ids, @PathVariable("sellStatus") Integer goodsSellStatus){
@@ -351,12 +359,5 @@ public class MallGoodsInfoController {
         return ans;
     }
 
-
-    /*public static void main(String[] args) {
-        MallGoodsInfoController controller = new MallGoodsInfoController();
-        String[] strings = new String[10];
-        boolean b = controller.judgeGoodsInfoRelevantParamsLegal(strings);
-        System.out.println(b);//true
-    }*/
 }
 

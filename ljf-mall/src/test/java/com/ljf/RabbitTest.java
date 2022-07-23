@@ -30,6 +30,11 @@ import java.util.UUID;
  *      为何不直接在方法上标注@RabbitListener？
  *          针对接收消息中的对象类型可以设置重载
  * */
+
+// 加载 Spring 配置文件的注解
+// @ContextConfiguration(locations = {"classpath:spring-persist-mybatis.xml"})
+// 指定 Spring 给 Junit 提供的运行器类
+// SpringRunner extends SpringJUnit4ClassRunner
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RabbitTest {

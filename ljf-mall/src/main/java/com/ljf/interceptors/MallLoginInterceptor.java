@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 public class MallLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 在进行秒杀相关功能之前，已经经过了拦截器的处理后登录了系统，后续看到秒杀相关的路径，
+        // 直接放行
         // 秒杀请求放过（压力测试使用）
         if (request.getRequestURI().startsWith("/seckillExecution")) {
             return true;

@@ -37,7 +37,7 @@ public class CacheConfig {
          *
          * 原来和配置文件绑定的配置类是这样子的
          * @ConfigurationProperties(prefix = "spring.cache")
-         * public class CacheProperties
+         * public class CacheProperties {}
          * 没有放到容器中
          */
         CacheProperties.Redis redisProperties = cacheProperties.getRedis();

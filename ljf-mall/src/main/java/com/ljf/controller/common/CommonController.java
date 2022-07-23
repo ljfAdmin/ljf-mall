@@ -1,9 +1,10 @@
 package com.ljf.controller.common;
 
 import com.ljf.constant.FrontMallUserInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,12 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 验证码相关
  * */
+@Api(value = "验证码相关控制层类")
 @Controller
 public class CommonController {
 
     /**
      * 后台：生成验证码
      * */
+    @ApiOperation(value = "后台：生成验证码")
     @GetMapping("/common/kaptcha")
     public void defaultKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         httpServletResponse.setHeader("Cache-Control", "no-store");
@@ -45,6 +48,7 @@ public class CommonController {
     /**
      * 前台：生成验证码
      * */
+    @ApiOperation(value = "前台：生成验证码")
     @GetMapping("/common/mall/kaptcha")
     public void mallKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         httpServletResponse.setHeader("Cache-Control", "no-store");

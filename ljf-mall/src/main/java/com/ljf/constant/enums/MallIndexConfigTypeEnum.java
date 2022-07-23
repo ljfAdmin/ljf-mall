@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.enums;
 
 public enum  MallIndexConfigTypeEnum {
     DEFAULT(0, "DEFAULT"),

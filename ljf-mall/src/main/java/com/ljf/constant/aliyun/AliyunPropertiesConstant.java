@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.aliyun;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;

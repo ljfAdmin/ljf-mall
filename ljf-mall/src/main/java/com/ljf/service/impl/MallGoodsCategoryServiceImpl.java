@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ljf.constant.MallGoodsCategoryLevel;
+import com.ljf.constant.enums.MallGoodsCategoryLevelEnum;
 import com.ljf.entity.MallGoodsCategory;
 import com.ljf.entity.vo.MallIndexGoodsCategoryVO;
 import com.ljf.entity.vo.MallIndexSecondLevelCategoryVO;
@@ -120,7 +120,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
         List<MallGoodsCategory> allGoodsCategories = baseMapper.selectList(null);
 
         // 获取一级分类的固定数量的数据
-        List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(), allGoodsCategories);
+        List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(), allGoodsCategories);
 
         if(!CollectionUtils.isEmpty(firstLevelCategories)){
             // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
@@ -130,7 +130,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
             for (MallGoodsCategory firstLevelCategory : firstLevelCategories) {
                 // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
                 List<MallIndexSecondLevelCategoryVO> mallIndexSecondLevelCategoryVOS = new ArrayList<>();
-                List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
                 MallIndexGoodsCategoryVO mallIndexGoodsCategoryVO = new MallIndexGoodsCategoryVO();
 
                 if(!CollectionUtils.isEmpty(secondLevelCategories)){
@@ -138,7 +138,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
                     for (MallGoodsCategory secondLevelCategory : secondLevelCategories) {
                         MallIndexSecondLevelCategoryVO mallIndexSecondLevelCategoryVO = new MallIndexSecondLevelCategoryVO();
 
-                        List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                        List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
                         //if(!CollectionUtils.isEmpty(thirdLevelCategories)){}
 
                         List<MallIndexThirdLevelCategoryVO> mallIndexThirdLevelCategoryVOS = BeanUtil.copyList(thirdLevelCategories, MallIndexThirdLevelCategoryVO.class);
@@ -193,9 +193,9 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
          * */
         String categoryAllIndex = stringRedisTemplate.opsForValue().get("categoryAllIndex");
         if(StringUtils.isEmpty(categoryAllIndex)){
-            // System.out.println("缓存不命中，查询数据库");
             //List<MallIndexGoodsCategoryVO> categoriesForIndexDB = this.getCategoriesForIndexDB();
             List<MallIndexGoodsCategoryVO> categoriesForIndexDB = this.getCategoriesForIndexDBWithSynchronized();
+            // 下面的逻辑已经放到了底层去实现
             //stringRedisTemplate.opsForValue().set("categoryAllIndex",JSON.toJSONString(categoriesForIndexDB));
             return categoriesForIndexDB;
         }
@@ -223,7 +223,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
             List<MallGoodsCategory> allGoodsCategories = baseMapper.selectList(null);
 
             // 获取一级分类的固定数量的数据
-            List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(), allGoodsCategories);
+            List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(), allGoodsCategories);
 
             if(!CollectionUtils.isEmpty(firstLevelCategories)){
                 // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
@@ -233,7 +233,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
                 for (MallGoodsCategory firstLevelCategory : firstLevelCategories) {
                     // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
                     List<MallIndexSecondLevelCategoryVO> mallIndexSecondLevelCategoryVOS = new ArrayList<>();
-                    List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                    List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
                     MallIndexGoodsCategoryVO mallIndexGoodsCategoryVO = new MallIndexGoodsCategoryVO();
 
                     if(!CollectionUtils.isEmpty(secondLevelCategories)){
@@ -243,7 +243,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
                         for (MallGoodsCategory secondLevelCategory : secondLevelCategories) {
                             MallIndexSecondLevelCategoryVO mallIndexSecondLevelCategoryVO = new MallIndexSecondLevelCategoryVO();
 
-                            List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                            List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
                             //if(!CollectionUtils.isEmpty(thirdLevelCategories)){}
 
                             List<MallIndexThirdLevelCategoryVO> mallIndexThirdLevelCategoryVOS = BeanUtil.copyList(thirdLevelCategories, MallIndexThirdLevelCategoryVO.class);
@@ -277,7 +277,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
         List<MallGoodsCategory> allGoodsCategories = baseMapper.selectList(null);
 
         // 获取一级分类的固定数量的数据
-        List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevel.LEVEL_ONE.getLevel(), allGoodsCategories);
+        List<MallGoodsCategory> firstLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(0L, MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel(), allGoodsCategories);
         
         if(!CollectionUtils.isEmpty(firstLevelCategories)){
             // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
@@ -287,7 +287,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
             for (MallGoodsCategory firstLevelCategory : firstLevelCategories) {
                 // 构建返回结果需要遍历两次，第一次遍历一级分类，第二次遍历二级分类
                 List<MallIndexSecondLevelCategoryVO> mallIndexSecondLevelCategoryVOS = new ArrayList<>();
-                List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> secondLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
                 MallIndexGoodsCategoryVO mallIndexGoodsCategoryVO = new MallIndexGoodsCategoryVO();
 
                 if(!CollectionUtils.isEmpty(secondLevelCategories)){
@@ -297,7 +297,7 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
                     for (MallGoodsCategory secondLevelCategory : secondLevelCategories) {
                         MallIndexSecondLevelCategoryVO mallIndexSecondLevelCategoryVO = new MallIndexSecondLevelCategoryVO();
 
-                        List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                        List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondLevelCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
                         //if(!CollectionUtils.isEmpty(thirdLevelCategories)){}
 
                         List<MallIndexThirdLevelCategoryVO> mallIndexThirdLevelCategoryVOS = BeanUtil.copyList(thirdLevelCategories, MallIndexThirdLevelCategoryVO.class);
@@ -392,12 +392,12 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
         SearchPageCategoryVO searchPageCategoryVO = new SearchPageCategoryVO();
         // 三级分类
         MallGoodsCategory thirdGoodsCategory = baseMapper.selectById(categoryId);
-        if(thirdGoodsCategory != null && MallGoodsCategoryLevel.LEVEL_THREE.getLevel().equals(thirdGoodsCategory.getCategoryLevel())){
+        if(thirdGoodsCategory != null && MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel().equals(thirdGoodsCategory.getCategoryLevel())){
             //获取当前三级分类的二级分类
             MallGoodsCategory secondGoodsCategory = baseMapper.selectById(thirdGoodsCategory.getParentId());
-            if(secondGoodsCategory != null && MallGoodsCategoryLevel.LEVEL_TWO.getLevel().equals(secondGoodsCategory.getCategoryLevel())){
+            if(secondGoodsCategory != null && MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel().equals(secondGoodsCategory.getCategoryLevel())){
                 // 获取当前二级分类下的所有三级分类
-                List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondGoodsCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                List<MallGoodsCategory> thirdLevelCategories = this.getAppointedLevelGoodsCategoriesFromAll(secondGoodsCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
 
                 searchPageCategoryVO.setCurrentCategoryName(thirdGoodsCategory.getCategoryName());
                 searchPageCategoryVO.setThirdLevelCategoryList(thirdLevelCategories);
@@ -405,9 +405,9 @@ public class MallGoodsCategoryServiceImpl extends ServiceImpl<MallGoodsCategoryM
 
                 // 获取当前二级分类的一级分类
                 MallGoodsCategory firstGoodsCategory = baseMapper.selectById(secondGoodsCategory.getParentId());
-                if(firstGoodsCategory != null && MallGoodsCategoryLevel.LEVEL_ONE.getLevel().equals(firstGoodsCategory.getCategoryLevel())){
+                if(firstGoodsCategory != null && MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel().equals(firstGoodsCategory.getCategoryLevel())){
                     // 获取当前一级分类下的所有二级分类
-                    List<MallGoodsCategory> secondLevelGoodsCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstGoodsCategory.getCategoryId(), MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+                    List<MallGoodsCategory> secondLevelGoodsCategories = this.getAppointedLevelGoodsCategoriesFromAll(firstGoodsCategory.getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
 
                     searchPageCategoryVO.setFirstLevelCategoryName(firstGoodsCategory.getCategoryName());
                     searchPageCategoryVO.setSecondLevelCategoryList(secondLevelGoodsCategories);

@@ -1,10 +1,9 @@
 package com.ljf.controller.front;
 
 import com.ljf.constant.FrontMallUserInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallUser;
 import com.ljf.entity.vo.MallUserVO;
-import com.ljf.service.MallCouponService;
 import com.ljf.service.MallUserService;
 import com.ljf.utils.HttpUtil;
 import com.ljf.utils.MD5Util;

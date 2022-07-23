@@ -3,12 +3,13 @@ package com.ljf.controller.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallCoupon;
 import com.ljf.service.MallCouponService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
-import io.lettuce.core.resource.KqueueProvider;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +30,7 @@ import java.util.Map;
  *
  * 优惠券信息及规则
  */
+@Api(value = "后台优惠券信息控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallCouponController {
@@ -40,19 +40,9 @@ public class MallCouponController {
     /**
      * 在这里更新一下优惠券的显示状态
      * */
+    @ApiOperation(value = "跳转到优惠券页面")
     @GetMapping(value = "/coupon")
     public String index(HttpServletRequest request) {
-        // 纠正状态！
-        /*List<MallCoupon> coupons = mallCouponService.list(null);
-        for (MallCoupon coupon : coupons) {
-            if(coupon.getCouponStartTime().compareTo(coupon.getCreateTime()) < 0){
-                coupon.setCouponStatus(2);
-            }else if(coupon.getCouponEndTime().compareTo(new Date()) <= 0){// 非法状态设置为下架
-                coupon.setCouponStatus(2);
-            }
-            mallCouponService.updateById(coupon);
-        }*/
-
         request.setAttribute("path", "ljf_mall_coupon");
         return "admin/mall_coupon";
     }
@@ -60,6 +50,7 @@ public class MallCouponController {
     /**
      * 分页显示优惠券信息
      * */
+    @ApiOperation(value = "分页查询优惠券信息")
     @GetMapping("/coupon/list")
     @ResponseBody
     public Result<Page<MallCoupon>> listCouponsPage(@RequestParam Map<String, Object> params){
@@ -84,21 +75,13 @@ public class MallCouponController {
     /**
      * 新增优惠券信息
      * */
+    @ApiOperation(value = "新增优惠券信息")
     @PostMapping("/coupon/save")
     @ResponseBody
     public Result saveCoupon(@RequestBody MallCoupon mallCoupon) throws ParseException {
         if(mallCoupon == null || mallCoupon.getCouponStartTime().compareTo(new Date()) < 0
                 || mallCoupon.getCouponEndTime().compareTo(mallCoupon.getCouponStartTime()) <= 0)// 或者增加一些其他必要字段值的判断
             return ResultGenerator.genFailResult(ToFrontMessageConstantEnum.PLEASE_INPUT_REQUIRED_PARAM.getResult());
-
-        /*System.out.println(mallCoupon.getCouponEndTime());
-        System.out.println(mallCoupon.getCouponStartTime());
-        // 可以写一个工具类
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String startFormat = simpleDateFormat.format(mallCoupon.getCouponStartTime());
-        String endFormat = simpleDateFormat.format(mallCoupon.getCouponEndTime());
-        mallCoupon.setCouponStartTime(new SimpleDateFormat("yyyy-MM-dd").parse(startFormat));
-        mallCoupon.setCouponEndTime(new SimpleDateFormat("yyyy-MM-dd").parse(endFormat));*/
 
         boolean saved = mallCouponService.save(mallCoupon);
         return saved ? ResultGenerator.genSuccessResult() : ResultGenerator.genFailResult(ToFrontMessageConstantEnum.SAVE_FAILED.getResult());
@@ -107,6 +90,7 @@ public class MallCouponController {
     /**
      * 更新优惠券信息
      * */
+    @ApiOperation(value = "更新优惠券信息")
     @ResponseBody
     @PostMapping("/coupon/update")
     public Result updateCoupon(@RequestBody MallCoupon mallCoupon) {
@@ -121,6 +105,7 @@ public class MallCouponController {
     /**
      * 详细信息
      * */
+    @ApiOperation(value = "根据主键ID查询优惠券信息")
     @GetMapping("/coupon/{id}")
     @ResponseBody
     public Result getCouponInfo(@PathVariable("id") Long id) {
@@ -131,6 +116,7 @@ public class MallCouponController {
     /**
      * 删除记录
      * */
+    @ApiOperation(value = "根据主键ID删除优惠券信息")
     @DeleteMapping("/coupon/{id}")
     @ResponseBody
     public Result deleteCoupon(@PathVariable("id") Long id) {

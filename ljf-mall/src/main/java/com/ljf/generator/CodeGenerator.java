@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.ljf.constant.MysqlGeneratorMagicValueConstant;
+import com.ljf.constant.mysql.MysqlGeneratorMagicValueConstant;
 
 public class CodeGenerator {
     public static void main(String[] args) {

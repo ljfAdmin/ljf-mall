@@ -3,7 +3,7 @@ package com.ljf.controller.front;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ljf.constant.FrontMallGoodsInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallGoodsInfo;
 import com.ljf.entity.vo.MallGoodsInfoDetailVO;
 import com.ljf.entity.vo.SearchPageCategoryVO;

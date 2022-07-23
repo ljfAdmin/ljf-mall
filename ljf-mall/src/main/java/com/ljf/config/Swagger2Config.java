@@ -20,10 +20,8 @@ public class Swagger2Config {
                 .groupName("webApi")
                 .apiInfo(webApiInfo())
                 .select()
-                // .paths(Predicates.not(PathSelectors.regex("/admin/.*")))
-                .paths(Predicates.not(PathSelectors.regex("/error.*")))
+                .paths(Predicates.not(PathSelectors.regex("/*")))
                 .build();
-        // 测试/admin方法的时候，注释掉
     }
 
     private ApiInfo webApiInfo(){
@@ -31,7 +29,7 @@ public class Swagger2Config {
                 .title("Mall网站-API文档")
                 .description("本文档描述了Mall商城服务接口定义")
                 .version("1.0")
-                .contact(new Contact("ljf", "http://xxx.com", "3478225731@qq.com"))
+                .contact(new Contact("ljf", "https://github.com/ljfAdmin/ljf-mall", "3478225731@qq.com"))
                 .build();
     }
 

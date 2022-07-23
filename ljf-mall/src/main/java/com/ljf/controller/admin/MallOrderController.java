@@ -3,7 +3,7 @@ package com.ljf.controller.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallOrder;
 import com.ljf.entity.MallOrderItem;
 import com.ljf.entity.vo.MallOrderItemVO;
@@ -11,6 +11,8 @@ import com.ljf.service.MallOrderItemService;
 import com.ljf.service.MallOrderService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import java.util.*;
  *
  * 订单表相关
  */
+@Api(value = "后台订单信息控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallOrderController {
@@ -42,6 +45,7 @@ public class MallOrderController {
     @Autowired
     private MallOrderItemService mallOrderItemService;
 
+    @ApiOperation(value = "跳转到订单页面")
     @GetMapping("/orders")
     public String ordersPage(HttpServletRequest request) {
         request.setAttribute("path", "orders");
@@ -51,6 +55,7 @@ public class MallOrderController {
     /**
      * 分页条件查询显示列表
      * */
+    @ApiOperation(value = "分页条件查询订单信息列表")
     @GetMapping(value = "/orders/list")
     @ResponseBody
     public Result getMallOrderListPageWhere(@RequestParam Map<String, Object> params) throws ParseException {
@@ -97,6 +102,7 @@ public class MallOrderController {
     /**
      * 修改
      */
+    @ApiOperation(value = "修改订单信息")
     @PostMapping(value = "/orders/update")
     @ResponseBody
     public Result updateMallOrder(@RequestBody MallOrder order) {
@@ -115,6 +121,7 @@ public class MallOrderController {
     /**
      * 详情
      * */
+    @ApiOperation(value = "根据主键ID查询订单详情")
     @GetMapping(value = "/order-items/{id}")
     @ResponseBody
     public Result getMallOrderById(@PathVariable("id") Long id){
@@ -143,10 +150,11 @@ public class MallOrderController {
     }
 
     /**
-     * 配货，检查订单是否完成，只有完成的订单才可以进行配货
+     * 检查订单是否完成，并关闭
      *  @ApiModelProperty(value = "订单状态:0.待支付 1.已支付 2.配货完成 3:出库成功 4.交易成功 -1.手动关闭 -2.超时关闭 -3.商家关闭")
      *     private Integer orderStatus;
      * */
+    @ApiOperation(value = "检查订单是否完成，并商家关闭")
     @PostMapping(value = "/orders/checkDone")
     @ResponseBody
     public Result checkDone(@RequestBody Long[] ids){
@@ -155,7 +163,7 @@ public class MallOrderController {
         }
 
         /**
-         * 检查订单是否完成，并配货
+         * 检查订单是否完成，并关闭
          * */
         String checkDone = mallOrderService.checkDone(ids);
         return ToFrontMessageConstantEnum.SUCCESS.getResult().equals(checkDone) ? ResultGenerator.genSuccessResult() : ResultGenerator.genFailResult(checkDone);
@@ -164,6 +172,7 @@ public class MallOrderController {
     /**
      * 出库，并修改状态为已出库
      * */
+    @ApiOperation(value = "出库，并修改状态为“出库成功”")
     @PostMapping(value = "/orders/checkOut")
     @ResponseBody
     public Result checkOut(@RequestBody Long[] ids){
@@ -178,6 +187,7 @@ public class MallOrderController {
     /**
      * 关闭订单
      * */
+    @ApiOperation(value = "根据主键数组批量关闭订单，订单状态变为商家关闭")
     @PostMapping(value = "/orders/close")
     @ResponseBody
     public Result closeOrder(@RequestBody Long[] ids) {

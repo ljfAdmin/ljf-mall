@@ -1,9 +1,11 @@
 package com.ljf.controller.admin;
 
 
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallAdminUser;
 import com.ljf.service.MallAdminUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpSession;
  * @author ljf
  * @since 2022-06-24
  */
+@Api(value = "后台管理员用户控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallAdminUserController {
@@ -29,6 +32,7 @@ public class MallAdminUserController {
     /**
      * 跳转到登录页面
      * */
+    @ApiOperation(value = "跳转到登录页面")
     @GetMapping(value = "/login")
     public String login(){
         return "admin/login";
@@ -37,6 +41,7 @@ public class MallAdminUserController {
     /**
      * 跳转到管理员后台首页
      * */
+    @ApiOperation(value = "跳转到管理员后台首页")
     @GetMapping(value = {"","/","index","index.html"})
     public String index(HttpServletRequest request){
         request.setAttribute("path","index");
@@ -48,6 +53,7 @@ public class MallAdminUserController {
      *
      *  到某个页面或者地址
      * */
+    @ApiOperation(value = "后台管理员登录表单提交")
     @PostMapping(value = "/login")
     public String login(@RequestParam("userName") String userName,
                         @RequestParam("password") String password,
@@ -95,6 +101,7 @@ public class MallAdminUserController {
      *
      * 点击发送请求，跳转到修改管理员信息的admin/profile.html页面，并做数据回显
      * */
+    @ApiOperation(value = "携带数据并跳转到修改管理员信息页面")
     @GetMapping("/profile")
     public String toAdminEditPage(HttpServletRequest request) {
         Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
@@ -113,6 +120,7 @@ public class MallAdminUserController {
     /**
      * 修改密码：发送的AJAX POST请求
      * */
+    @ApiOperation(value = "修改管理员用户自己密码")
     @PostMapping("/profile/password")
     @ResponseBody
     public String updateAdminPassword(@RequestParam("originalPassword") String originalPassword,
@@ -137,6 +145,7 @@ public class MallAdminUserController {
     /**
      * 修改个人信息，或者说修改名称等
      * */
+    @ApiOperation(value = "修改管理员自己的昵称")
     @PostMapping(value = "/profile/name")
     @ResponseBody
     public String updateAdminUser(@RequestParam("loginUserName") String loginUserName,
@@ -157,6 +166,7 @@ public class MallAdminUserController {
     /**
      * 退出登录，一般退出登录之后会进入登录页面
      * */
+    @ApiOperation(value = "退出登录")
     @GetMapping(value = "/logout")
     public String logout(HttpServletRequest request){
         request.getSession().removeAttribute("loginUserId");

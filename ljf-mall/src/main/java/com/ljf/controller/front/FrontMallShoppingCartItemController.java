@@ -1,7 +1,7 @@
 package com.ljf.controller.front;
 
 import com.ljf.constant.FrontMallUserInfoConstant;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallShoppingCartItem;
 import com.ljf.entity.vo.MallMyCouponVO;
 import com.ljf.entity.vo.MallShoppingCartItemVO;

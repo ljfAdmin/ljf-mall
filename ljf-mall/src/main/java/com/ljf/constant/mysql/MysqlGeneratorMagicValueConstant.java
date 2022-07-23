@@ -1,4 +1,4 @@
-package com.ljf.constant;
+package com.ljf.constant.mysql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,5 @@ public class MysqlGeneratorMagicValueConstant {
         TABLE_NAMES.add("mall_user");
         TABLE_NAMES.add("mall_user_coupon_record");
     }
-
-    /*public static void main(String[] args) {
-        System.out.println(TABLE_NAMES.size());
-    }*/
 
 }

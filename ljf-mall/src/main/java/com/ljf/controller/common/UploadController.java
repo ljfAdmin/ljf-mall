@@ -3,6 +3,8 @@ package com.ljf.controller.common;
 import com.ljf.constant.CommonConstant;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +26,7 @@ import java.util.*;
 /**
  * 文件上传相关
  * */
+@Api(value = "文件上传相关控制层类")
 @Controller
 @RequestMapping("/admin")
 public class UploadController {
@@ -42,6 +45,7 @@ public class UploadController {
     @Autowired
     private StandardServletMultipartResolver standardServletMultipartResolver;
 
+    @ApiOperation(value = "上传单个文件")
     @PostMapping({"/upload/file"})
     @ResponseBody
     public Result upload(HttpServletRequest httpServletRequest,
@@ -76,6 +80,7 @@ public class UploadController {
         }
     }
 
+    @ApiOperation(value = "上传多个文件")
     @PostMapping({"/upload/files"})
     @ResponseBody
     public Result uploadV2(HttpServletRequest httpServletRequest) {

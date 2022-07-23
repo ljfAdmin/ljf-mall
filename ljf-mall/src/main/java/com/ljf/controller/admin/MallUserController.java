@@ -3,12 +3,13 @@ package com.ljf.controller.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallUser;
 import com.ljf.service.MallUserService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,14 @@ import java.util.Map;
  * @author ljf
  * @since 2022-06-24
  */
+@Api(value = "后台普通用户控制层类")
 @RestController
 @RequestMapping("/admin")
 public class MallUserController {
     @Autowired
     private MallUserService mallUserService;
 
+    @ApiOperation(value = "跳转到用户信息页面")
     @GetMapping("/users")
     public String toUsersPage(HttpServletRequest request) {
         request.setAttribute("path", "users");
@@ -39,6 +42,7 @@ public class MallUserController {
     /**
      * 分页查询列表
      * */
+    @ApiOperation(value = "分页查询用户信息列表")
     @GetMapping(value = "/users/list")
     @ResponseBody
     public Result getUsersListPageWhere(@RequestParam Map<String, Object> params) {
@@ -64,6 +68,7 @@ public class MallUserController {
     /**
      * 用户禁用与解除禁用(0-未锁定 1-已锁定)
      */
+    @ApiOperation(value = "用户禁用与解除禁用(0-未锁定 1-已锁定)")
     @PostMapping(value = "/users/lock/{lockStatus}")
     @ResponseBody
     public Result delete(@RequestBody Integer[] ids, @PathVariable("lockStatus") int lockStatus) {

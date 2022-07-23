@@ -3,12 +3,14 @@ package com.ljf.controller.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ljf.constant.MallGoodsCategoryLevel;
-import com.ljf.constant.ToFrontMessageConstantEnum;
+import com.ljf.constant.enums.MallGoodsCategoryLevelEnum;
+import com.ljf.constant.enums.ToFrontMessageConstantEnum;
 import com.ljf.entity.MallGoodsCategory;
 import com.ljf.service.MallGoodsCategoryService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ import java.util.*;
  *
  * 商品分类相关操作
  */
+@Api(value = "后台商品分类相关控制层类")
 @Controller
 @RequestMapping("/admin")
 public class MallGoodsCategoryController {
@@ -40,6 +43,7 @@ public class MallGoodsCategoryController {
      * parentId:父分类id
      * backParentId:父分类id的排序值(字段越大越靠前)
      * */
+    @ApiOperation(value = "携带参数跳转到分类页面")
     @GetMapping("/categories")
     public String toCategoriesPage(HttpServletRequest request,
                                  @RequestParam("categoryLevel") Integer categoryLevel,
@@ -60,6 +64,7 @@ public class MallGoodsCategoryController {
     /**
      * 分页列表查询
      * */
+    @ApiOperation(value = "条件分页查询分类信息")
     @GetMapping(value = "/categories/list")
     @ResponseBody
     public Result getGoodCategoryListPage(@RequestParam Map<String, Object> params) {
@@ -78,12 +83,10 @@ public class MallGoodsCategoryController {
         QueryWrapper<MallGoodsCategory> queryWrapper = new QueryWrapper<>();
         Integer categoryLevel = Integer.valueOf(((String) params.get("categoryLevel")));
         Long parentId = Long.valueOf(((String) params.get("parentId")));
-        // Integer start = (currentPage - 1) * limit;
 
         queryWrapper.eq("category_level",categoryLevel);
         queryWrapper.eq("parent_id",parentId);
         queryWrapper.orderByDesc("category_rank");
-        // queryWrapper.last("limit "+start+","+limit);
         mallGoodsCategoryService.page(page,queryWrapper);
 
         return ResultGenerator.genSuccessResult(page);
@@ -95,6 +98,7 @@ public class MallGoodsCategoryController {
      *
      *  进行改进：
      * */
+    @ApiOperation(value = "查询一个父级分类下的子分类信息")
     @GetMapping(value = "/categories/listForSelect")
     @ResponseBody
     public Result listCategoryUnderParentForSelect(@RequestParam("categoryId") Long categoryId){
@@ -107,13 +111,13 @@ public class MallGoodsCategoryController {
         MallGoodsCategory goodsCategory = mallGoodsCategoryService.getById(categoryId);
 
         // 同样的，这里可以通过前端进行判断
-        if(goodsCategory == null || MallGoodsCategoryLevel.LEVEL_THREE.getLevel().equals(goodsCategory.getCategoryLevel())){
+        if(goodsCategory == null || MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel().equals(goodsCategory.getCategoryLevel())){
             return ResultGenerator.genFailResult(ToFrontMessageConstantEnum.INPUT_PARAM_EXCEPTION.getResult());
         }
 
         Map<String ,Object> categoryMapResult = new HashMap<>(4);
         // 如果是一级分类则返回当前一级分类下的所有二级分类，以及二级分类列表中第一条数据下的所有三级分类列表
-        if(MallGoodsCategoryLevel.LEVEL_ONE.getLevel().equals(goodsCategory.getCategoryLevel())){
+        if(MallGoodsCategoryLevelEnum.LEVEL_ONE.getLevel().equals(goodsCategory.getCategoryLevel())){
             // 首先根据一级分类的ID查询出所有二级分类
             /*QueryWrapper<MallGoodsCategory> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("parent_id",categoryId);
@@ -122,7 +126,7 @@ public class MallGoodsCategoryController {
             List<MallGoodsCategory> secondGoodsCategories = mallGoodsCategoryService.list(queryWrapper);*/
 
             //List<MallGoodsCategory> secondGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(categoryId, MallGoodsCategoryLevel.LEVEL_TWO.getLevel());
-            List<MallGoodsCategory> secondGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(categoryId, MallGoodsCategoryLevel.LEVEL_TWO.getLevel(),allGoodsCategories);
+            List<MallGoodsCategory> secondGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(categoryId, MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel(),allGoodsCategories);
 
             // 然后再查询出来二级分类中第一个二级分类的所有三级分类
             if(!CollectionUtils.isEmpty(secondGoodsCategories)){// 会判断是否为null，以及是否为空
@@ -136,7 +140,7 @@ public class MallGoodsCategoryController {
                 //List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(
                 //        secondGoodsCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
                 List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(
-                        secondGoodsCategories.get(0).getCategoryId(), MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+                        secondGoodsCategories.get(0).getCategoryId(), MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
 
                 categoryMapResult.put("secondLevelCategories",secondGoodsCategories);
                 categoryMapResult.put("thirdLevelCategories",threeGoodsCategories);
@@ -144,7 +148,7 @@ public class MallGoodsCategoryController {
         }
 
         // 如果是二级分类，则返回当前分类下的所有三级分类列表
-        if(MallGoodsCategoryLevel.LEVEL_TWO.getLevel().equals(goodsCategory.getCategoryLevel())){
+        if(MallGoodsCategoryLevelEnum.LEVEL_TWO.getLevel().equals(goodsCategory.getCategoryLevel())){
             /*QueryWrapper<MallGoodsCategory> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("parent_id",categoryId);
             queryWrapper.eq("category_level",MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
@@ -152,7 +156,7 @@ public class MallGoodsCategoryController {
             List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.list(queryWrapper);*/
 
             //List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategories(categoryId, MallGoodsCategoryLevel.LEVEL_THREE.getLevel());
-            List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(categoryId, MallGoodsCategoryLevel.LEVEL_THREE.getLevel(),allGoodsCategories);
+            List<MallGoodsCategory> threeGoodsCategories = mallGoodsCategoryService.getAppointedLevelGoodsCategoriesFromAll(categoryId, MallGoodsCategoryLevelEnum.LEVEL_THREE.getLevel(),allGoodsCategories);
             categoryMapResult.put("thirdLevelCategories",threeGoodsCategories);
         }
 
@@ -163,6 +167,7 @@ public class MallGoodsCategoryController {
     /**
      * 添加
      * */
+    @ApiOperation(value = "添加分类信息")
     @PostMapping(value = "/categories/save")
     @ResponseBody
     public Result saveGoodsCategory(@RequestBody MallGoodsCategory goodsCategory) {
@@ -182,6 +187,7 @@ public class MallGoodsCategoryController {
     /**
      * 修改，注：这里的参数判定除了放在前端外，后端也可以对每种实体类的参数判别进行抽取方法
      * */
+    @ApiOperation(value = "更新分类信息")
     @PostMapping(value = "/categories/update")
     @ResponseBody
     public Result updateGoodsCategory(@RequestBody MallGoodsCategory goodsCategory) {
@@ -200,6 +206,7 @@ public class MallGoodsCategoryController {
     /**
      * 获得商品分类的详细信息
      * */
+    @ApiOperation(value = "根据主键获得分类详情")
     @GetMapping(value = "/categories/info/{id}")
     @ResponseBody
     public Result getGoodsCategoryInfo(@PathVariable("id") Long id) {
@@ -210,9 +217,9 @@ public class MallGoodsCategoryController {
     /**
      * 分类的删除
      * */
+    @ApiOperation(value = "根据主键ID数组批量删除分类信息")
     @PostMapping(value = "/categories/delete")
     @ResponseBody
-    //public Result deleteGoodsCategoryByIds(@RequestBody Integer[] ids) {
     public Result deleteGoodsCategoryByIds(@RequestBody Long[] ids) {
         if(ids == null || ids.length <= 0){
             return ResultGenerator.genFailResult(ToFrontMessageConstantEnum.PLEASE_INPUT_REQUIRED_PARAM.getResult());

@@ -53,12 +53,13 @@ public class RepeatSubmitInterceptor implements HandlerInterceptor {
             }
 
             String parametersMap = JSONObject.toJSONString(request.getParameterMap());
+
             Map<String,Object> nowData = new HashMap<>(8);
             nowData.put(REPEAT_PARAMETERS,parametersMap);
             long nowTime = System.currentTimeMillis();
             nowData.put(REPEAT_TIME,nowTime);
 
-            // URI包括协议、IP和端口号以及URL
+            // URL包括协议、IP和端口号以及URI
             String requestURI = request.getRequestURI();
 
             HttpSession session = request.getSession();
