@@ -29,19 +29,20 @@ import java.time.Duration;
 
 /**
  *  Spring框架中的spring-data-redis模块对Jedis API的进行了高度封装，
- * 提供了在Spring应用中通过简单的连接池信息配置就可以访问Redis服务并进行相关缓存操作。
+ *      提供了在Spring应用中通过  简单的连接池信息配置  就可以访问Redis服务并进行相关缓存操作。
  * SpringDataRedis相对于Jedis来说可以方便地更换Redis的Java客户端
- * 如多线程安全的Lettuce，比Jedis多了自动管理连接池的特性，
- * 不需要我们自己的JediPoolUtil封装工具类。
+ *          如！！！多线程安全的Lettuce，比Jedis多了！！！自动管理连接池！！！的特性，
+ *          不需要我们自己的JediPoolUtil封装工具类。
  *  它还默认提供了两个使用Redis的类StringRedisTemplate和RedisTemplate，
- * 其中RedisTemplate可以支持Redis没有的缓存对象的操作，
- * 而StringRedisTemplate用来存储字符串。
- * (其实它们都是RedisTemplate<K, V>泛型接口的实现类,我们可以自定义模板然后@AutoWired注入IOC容器中使用)
+ *      其中RedisTemplate可以支持Redis没有的缓存对象的操作，
+ *      而StringRedisTemplate用来存储字符串。
+ *      (其实它们都是RedisTemplate<K, V>泛型接口的实现类,我们可以自定义模板然后
+ *          @AutoWired 注入IOC容器中使用)
  *
  * ⭐ SpringBoot 2.0已经使用Lettuce代替Jedis
  *  🔮 其实，随着Spring Boot2.x的到来，支持的组件越来越丰富，也越来越成熟，
- * 其中对Redis的支持不仅仅是丰富了它的API，更是替换掉底层Jedis的依赖，
- * 取而代之换成了Lettuce高级Redis客户端，用于多线程安全同步，异步和响应使用。
+ * 其中对Redis的支持不仅仅是丰富了它的API，！！！更是替换掉底层Jedis的依赖，
+ * 取而代之换成了！！！Lettuce高级Redis客户端，用于多线程安全同步，异步和响应使用。
  *  🔮 Lettuce和Jedis的都是连接Redis Server的客户端程序。Jedis在实现上是直连redis server，
  * 多线程环境下非线程安全，除非使用连接池JedisPool，为每个Jedis实例增加物理连接。
  * Lettuce基于Netty的连接实例（StatefulRedisConnection），可以在多个线程间并发访问，
@@ -132,7 +133,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith("redis_key")
                 .entryTtl(Duration.ofSeconds(expire))
-                .disableCachingNullValues();
+                .disableCachingNullValues();// 禁止缓存空值
     }
     @Bean(name = "cacheKeyGenerator")
     public KeyGenerator cacheKeyGenerator() {

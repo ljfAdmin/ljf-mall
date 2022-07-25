@@ -104,7 +104,6 @@ public class FrontMallShoppingCartItemController {
     /**
      * settle：解决
      *  跳转到结算页面
-     * ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
      * */
     @GetMapping("/shop-cart/settle")
     public String settlePage(HttpServletRequest request,HttpSession httpSession) throws Exception {

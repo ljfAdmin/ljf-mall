@@ -140,6 +140,7 @@ public class FrontMallOrderController {
      * */
     @RepeatSubmit
     @GetMapping("/saveOrder")
+    // public String saveOrder(String couponUserId, HttpSession httpSession) throws Exception {
     public String saveOrder(Long couponUserId, HttpSession httpSession) throws Exception {
         MallUserVO user = (MallUserVO) httpSession.getAttribute(FrontMallUserInfoConstant.MALL_USER_SESSION_KEY);
         List<MallShoppingCartItemVO> myShoppingCartItemVOS = mallShoppingCartItemService.getMyShoppingCartItems(user.getUserId());
@@ -155,7 +156,9 @@ public class FrontMallOrderController {
         }
 
         //保存订单并返回订单号
+        //String saveOrderResult = mallOrderService.saveOrder(user, Long.valueOf(couponUserId), myShoppingCartItemVOS);
         String saveOrderResult = mallOrderService.saveOrder(user, couponUserId, myShoppingCartItemVOS);
+
         //跳转到订单详情页
         return "redirect:/orders/" + saveOrderResult;
     }

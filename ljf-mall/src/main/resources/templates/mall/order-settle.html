@@ -95,21 +95,22 @@
                                                     <a href="javascript:;"
                                                        th:onclick="">
                                                         <div class="left-desc">
-                                                            <input type="hidden" th:value="${coupon.couponUserId}">
+                                                            <input type="hidden" class="active" th:value="${coupon.couponUserId}">
+<!--                                                            <input type="hidden" class="active" th:value="${coupon.couponUserId}">-->
                                                             <div class="q-price ">
                                                                 <em>¥</em>
                                                                 <strong th:text="${coupon.discount}">50</strong>
                                                                 <span class="q-limit" data-tips=""
                                                                       th:text="'满'+${coupon.min}+'元可用'">满1000元可用</span>
                                                             </div>
-                                                            <div class="q-name" th:text="${coupon.name}">
+                                                            <div class="q-name" th:text="${coupon.couponName}">
                                                                 限时满减券
                                                             </div>
                                                             <div class="q-desc">
                                                                 <div th:text="${coupon.couponDesc}"
                                                                      th:title="${coupon.couponDesc}">全场通用
                                                                 </div>
-                                                                <div th:text="'有效期：'+${#dates.format(coupon.endTime, 'yyyy-MM-dd')}">
+                                                                <div th:text="'有效期：'+${#dates.format(coupon.couponEndTime, 'yyyy-MM-dd')}">
                                                                     有效期：2020-12-12
                                                                 </div>
                                                             </div>
@@ -238,7 +239,7 @@
         if (userAddress.trim().length < 10) {
             swal("请输入正确的收货信息", {
                 icon: "error",
-            });
+            });my-coupon
             return;
         }
         if ($('#isSeckillSettle').val()) {

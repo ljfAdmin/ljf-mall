@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * 定时任务脚本，系统启动时检查是否有超时订单
+ *
+ * 用于处理 程序重启 之后 继续处理延迟任务
  * */
 public class TaskStartupRunner implements ApplicationRunner {
     public static final Long UN_PAID_ORDER_EXPIRE_TIME = 30L;

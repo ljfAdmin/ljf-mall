@@ -3,12 +3,15 @@ package com.ljf.thread;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Delayed：延迟接口，获取延迟时间
+ * */
 public abstract class Task implements Delayed, Runnable {
     private final String id;
     private final long start;
 
     /**
-     * @param id 定时任务ID
+     * @param id 定时任务ID，区分不同任务
      * @param delayInMilliseconds 延迟执行时间，单位/毫秒
      */
     public Task(String id, long delayInMilliseconds) {

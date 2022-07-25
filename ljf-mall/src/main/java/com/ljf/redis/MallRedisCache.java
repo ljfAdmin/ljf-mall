@@ -77,7 +77,7 @@ public class MallRedisCache {
         redisTemplate.opsForValue().set(key, value);
     }
     /**
-     * 设置redis键值对
+     * 设置redis键值对，带有过期时间的
      *
      * @param key      redis键
      * @param value    redis值

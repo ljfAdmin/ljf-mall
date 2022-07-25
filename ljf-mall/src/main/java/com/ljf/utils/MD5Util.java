@@ -140,5 +140,8 @@ public class MD5Util {
         System.out.println(getSaltT());// o+gOuh3wboZ0574dK6LH   TRW9h6sb9YdZ5R0tMmip
 
         System.out.println();
+
+
+        System.out.println(encrypt(24+""));//1ff1de774005f8da13f42943881c655f
     }
 }

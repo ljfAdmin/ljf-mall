@@ -210,6 +210,7 @@ public class MallCouponServiceImpl extends ServiceImpl<MallCouponMapper, MallCou
         queryWrapper.last("limit 8");
         List<MallUserCouponRecord> userCouponRecords = mallUserCouponRecordService.list(queryWrapper);
 
+
         List<MallMyCouponVO> mallMyCouponVOS = new ArrayList<>();
         if(!CollectionUtils.isEmpty(userCouponRecords)){
             mallMyCouponVOS = BeanUtil.copyList(userCouponRecords, MallMyCouponVO.class);
@@ -217,6 +218,7 @@ public class MallCouponServiceImpl extends ServiceImpl<MallCouponMapper, MallCou
             for (MallUserCouponRecord userCouponRecord : userCouponRecords) {
                 couponIds.add(userCouponRecord.getCouponId());
             }
+
 
             // 然后根据这些couponId获取对应的MallCoupon对象，进而封装MallMyCouponVO对象
             List<MallCoupon> coupons = baseMapper.selectBatchIds(couponIds);
@@ -244,6 +246,8 @@ public class MallCouponServiceImpl extends ServiceImpl<MallCouponMapper, MallCou
                     // mallMyCouponVO.setCouponEndTime(Date.from(zonedDateTime.toInstant()));
                 }
             }
+
+
         }
 
         for (MallMyCouponVO mallMyCouponVO : mallMyCouponVOS) {
@@ -304,8 +308,11 @@ public class MallCouponServiceImpl extends ServiceImpl<MallCouponMapper, MallCou
                     flag = true;
                 }
 
+                if(!flag){
+                    mallMyCouponVOS.remove(mallMyCouponVO);
+                }
                 // 过滤出来只有flag为true的情况
-                if(flag){
+                /*if(flag){
                     // 根据discount从大到小排序
                     mallMyCouponVOS.sort(new Comparator<MallMyCouponVO>() {
                         @Override
@@ -313,9 +320,18 @@ public class MallCouponServiceImpl extends ServiceImpl<MallCouponMapper, MallCou
                             return o1.getDiscount() - o2.getDiscount();
                         }
                     });
-                }
+                }*/
+
             }
         }
+
+        // 根据discount从大到小排序
+        mallMyCouponVOS.sort(new Comparator<MallMyCouponVO>() {
+            @Override
+            public int compare(MallMyCouponVO o1, MallMyCouponVO o2) {
+                return o1.getDiscount() - o2.getDiscount();
+            }
+        });
 
         return mallMyCouponVOS;
     }

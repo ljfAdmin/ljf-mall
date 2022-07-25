@@ -6,6 +6,10 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executors;
 
+/**
+ * Java使用 Delayed 实现延迟任务
+ * 延迟任务队列
+ * */
 @Component
 public class TaskService {
     /**
@@ -52,6 +56,9 @@ public class TaskService {
      * */
     @PostConstruct
     private void init() {
+        /**
+         * 将一个线程加入到线程池中，执行，从延时队列中取出延时任务并执行其run方法进行回滚
+         * */
         Executors.newSingleThreadExecutor().execute(() -> {
             while (true) {
                 try {
@@ -64,6 +71,11 @@ public class TaskService {
         });
     }
 
+    /**
+     * 添加一个任务：
+     *  如果存在，直接返回；
+     *  如果不存在，直接add添加到延时任务队列末尾
+     * */
     public void addTask(Task task) {
         if (delayQueue.contains(task)) {
             return;
@@ -71,6 +83,9 @@ public class TaskService {
         delayQueue.add(task);
     }
 
+    /**
+     * 删除一个任务，但是只有延时时间到了才会被移除
+     * */
     public void removeTask(Task task) {
         delayQueue.remove(task);
     }

@@ -277,9 +277,10 @@ public class MallOrderServiceImpl extends ServiceImpl<MallOrderMapper, MallOrder
                 StockNumDTO stockNumDTO = new StockNumDTO();
                 BeanUtils.copyProperties(myShoppingCartItemVO,stockNumDTO);
 
+                goodsInfo.setStockNum(goodsInfo.getStockNum() - stockNumDTO.getGoodsCount());
+
                 UpdateWrapper<MallGoodsInfo> updateWrapper = new UpdateWrapper<>();
-                updateWrapper.set("stock_num",goodsInfo.getStockNum() - stockNumDTO.getGoodsCount());
-                updateWrapper.eq("goods_id",stockNumDTO.getGoodsCount());
+                updateWrapper.eq("goods_id",stockNumDTO.getGoodsId());
                 updateWrapper.ge("stock_num",stockNumDTO.getGoodsCount());
                 updateWrapper.eq("goods_sell_status",MallGoodsSellStatusConstant.SELL_STATUS_UP);
 

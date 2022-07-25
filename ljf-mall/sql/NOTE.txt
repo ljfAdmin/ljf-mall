@@ -1,9 +1,8 @@
-3.该项目中使用的分页插件是jqGrid前端库
-
-7.事务相关的操作
-8.RedisCache中的说明
+普通用户：账号13700002703，密码123456
+管理员用户：账号admin，密码123456
 
 9.除了OrderController、MallUserController以及MallSeckillController之外，其他都还没有考虑事务
+    即事务相关
 
 java出现一系列找不到符号错误解决:https://blog.csdn.net/m0_67266787/article/details/123949692
 
@@ -29,8 +28,6 @@ Unparseable date: "2022-07-07")
 注：URL和URI的区别
     System.out.println(request.getRequestURI());// /seckill
     System.out.println(request.getRequestURL());// http://localhost:8081/seckill
-
-
 
 改进：
     分布式？
@@ -140,8 +137,10 @@ Unparseable date: "2022-07-07")
         方法都只进入了一次
         2100+  38 54 123
     再次测试：2300+  34  47  106  没有再进入上述方法
-优化8：
-
+优化8：秒杀测试
+    每秒50个线程，http://localhost:8081/seckillExecution/24/1/1ff1de774005f8da13f42943881c655f
+支持优惠券使用，包含三种类型的优惠券：注册赠券、指定分类用券、指定商品用券。 用户可以在首页领取优惠券后在下订单页面会看到满足可用条件的优惠券，选择使用后，计算订单金额时，会扣减。
+添加秒杀专区，前台页面已经添加秒杀商品倒计时展示，在秒杀开启时间内， 用户对秒杀商品进行下单时，系统内秒杀接口采用redis缓存、令牌桶限流、存储过程等多种手段优化秒杀操作，使得秒杀操作最高支持万人秒杀 附jmeter100000请求压测截图，配置：家用电脑6核12线程运行内存2g，100000请求时长持续2分5秒、最大响应时长900毫秒、异常率0%、吞吐量798每秒
 
 
 注：
