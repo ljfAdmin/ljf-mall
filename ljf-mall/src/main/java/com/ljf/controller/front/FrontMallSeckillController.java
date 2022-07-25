@@ -17,6 +17,8 @@ import com.ljf.utils.BeanUtil;
 import com.ljf.utils.MD5Util;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Api(description = "前台秒杀相关控制层类")
 @Controller
 public class FrontMallSeckillController {
     @Autowired
@@ -47,6 +50,7 @@ public class FrontMallSeckillController {
     @Autowired
     private MallRedisCache mallRedisCache;
 
+    @ApiOperation(value = "跳转到秒杀列表页面")
     @GetMapping("/seckill")
     public String toSeckillIndex() {
         return "mall/seckill-list";
@@ -54,9 +58,8 @@ public class FrontMallSeckillController {
 
     /**
      * 获取服务器时间
-     *
-     * @return result
      */
+    @ApiOperation(value = "获取当前时间（秒杀）")
     @ResponseBody
     @GetMapping("/seckill/time/now")
     public Result getTimeNow() {
@@ -65,9 +68,9 @@ public class FrontMallSeckillController {
 
     /**
      * 判断秒杀商品虚拟库存是否足够
-     *
      * @param seckillId 秒杀ID
      */
+    @ApiOperation(value = "判断秒杀商品虚拟库存是否足够")
     @ResponseBody
     @PostMapping("/seckill/{seckillId}/checkStock")
     public Result seckillCheckStock(@PathVariable("seckillId") Long seckillId) {
@@ -81,11 +84,12 @@ public class FrontMallSeckillController {
     }
 
     /**
-     * 获取秒杀链接   ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+     * 获取秒杀链接
      *
      * @param seckillId 秒杀商品ID
      * @return result
      */
+    @ApiOperation(value = "获取秒杀连接，包括秒杀状态、系统当前时间、开始时间、结束时间、加密和ID")
     @ResponseBody
     @PostMapping("/seckill/{seckillId}/exposer")
     public Result exposerUrl(@PathVariable Long seckillId) {
@@ -102,6 +106,7 @@ public class FrontMallSeckillController {
      * @param userId    用户ID
      * @param md5       秒杀链接的MD5加密信息
      */
+    @ApiOperation(value = "执行秒杀操作")
     @ResponseBody
     @PostMapping(value = "/seckillExecution/{seckillId}/{userId}/{md5}")
     public Result execute(@PathVariable("seckillId") Long seckillId,
@@ -118,6 +123,7 @@ public class FrontMallSeckillController {
     /**
      * 根据秒杀ID跳转到秒杀信息页面
      * */
+    @ApiOperation(value = "根据秒杀ID跳转到秒杀信息页面")
     @GetMapping("/seckill/info/{seckillId}")
     public String toSeckillInfo(@PathVariable("seckillId") Long seckillId,
                               HttpServletRequest request,
@@ -131,8 +137,9 @@ public class FrontMallSeckillController {
     }
 
     /**
-     * 秒杀列表   ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+     * 秒杀列表
      * */
+    @ApiOperation(value = "前台：秒杀列表信息")
     @GetMapping("/seckill/list")
     @ResponseBody
     public Result secondKillGoodsList() {
@@ -192,6 +199,7 @@ public class FrontMallSeckillController {
     /**
      * 根据秒杀ID获取  对应的VO对象
      * */
+    @ApiOperation(value = "根据秒杀ID获得对应的VO对象")
     @GetMapping("/seckill/{seckillId}")
     @ResponseBody
     public Result seckillGoodsDetail(@PathVariable Long seckillId) {

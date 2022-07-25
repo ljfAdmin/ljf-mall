@@ -10,6 +10,8 @@ import com.ljf.service.MallCouponService;
 import com.ljf.service.MallUserCouponRecordService;
 import com.ljf.utils.Result;
 import com.ljf.utils.ResultGenerator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,7 @@ import java.util.List;
  *
  * 优惠券信息及规则
  */
+@Api(value = "前台优惠券控制层类")
 @Controller
 public class FrontMallCouponController {
     @Autowired
@@ -39,6 +42,7 @@ public class FrontMallCouponController {
      *  跳转到前台coupon列表页面，并查询出所有的优惠券前端VO信息，其
      * 中前端VO信息的一些设置需要判别
      * */
+    @ApiOperation(value = "")
     @GetMapping(value = "/couponList")
     public String toCouponList(HttpServletRequest request, HttpSession session) {
         Long userId = null;
